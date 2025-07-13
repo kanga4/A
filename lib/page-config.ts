@@ -1,22 +1,22 @@
 const pageConfig = {
   welcome: {
-    title: "Welcome to the Interview",
-    content: "Please read and accept the consent to proceed.",
-    consentText: "I agree to participate.",
+    title: "Welcome to Limits Assistant",
+    content: "I'm here to help you with buying custom edits like QR, posters, thumbnails, video banners, and more!",
+    consentText: "I agree to chat with Limits Assistant",
   },
   interview: {
-    title: "Interview in Progress",
-    content: "Speak clearly so we can transcribe accurately.",
+    title: "Let's Get Started",
+    content: "Ask anything about pricing, services, or place an order. I'm here to assist you!",
   },
   survey: {
-    title: "Rate Your Experience",
-    content: "How was your session?",
-    submitButtonText: "Submit",
+    title: "Rate My Helpfulness",
+    content: "How was your experience?",
+    submitButtonText: "Submit Feedback",
   },
   thankYou: {
     title: "Thank You!",
-    content: "Your responses have been recorded.",
-    additionalInfo: "We appreciate your time.",
+    content: "Your feedback helps us improve.",
+    additionalInfo: "Ready to assist anytime at Limits!",
   },
 };
 
