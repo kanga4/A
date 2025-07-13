@@ -135,8 +135,4 @@ export default function Page() {
       {renderCurrentPage()}
     </main>
   );
-}p-4 bg-gray-50 flex justify-center items-center">
-      {renderCurrentPage()}
-    </main>
-  );
 }
