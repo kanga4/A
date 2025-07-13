@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 import Visualizer from "../components/visualizer";
 
 const pageConfig = {
