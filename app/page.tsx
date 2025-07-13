@@ -1,80 +1,32 @@
 "use client";
-import { useState, useEffect } from "react";
-import styles from "../../style/page.module.css";
-import Visualizer from "../components/visualizer";
+import { useState } from "react";
+import { PhoneIcon } from "lucide-react";
+import Visualizer from "@/components/visualizer";
+import useVapi from "@/hooks/use-vapi";
+import pageConfig from "@/lib/page-config";
 
-const pageConfig = {
-  welcome: {
-    enabled: true,
-    order: 1,
-    title: "Welcome to Sophie",
-    content: "Before we begin, please agree below to talk to Sophie, your assistant.",
-    consentText: "I agree to talk with Sophie and understand how my data will be used.",
-  },
-  interview: {
-    enabled: true,
-    order: 2,
-    title: "Sophie – AI Assistant",
-    content: "Sophie is here to help. You may speak naturally and ask any support-related questions.",
-  },
-  survey: {
-    enabled: true,
-    order: 3,
-    title: "Feedback",
-    content: "Please tell us how Sophie did today.",
-    submitButtonText: "Send Feedback",
-  },
-  thankYou: {
-    enabled: true,
-    order: 4,
-    title: "Thank You!",
-    content: "Thanks for using Sophie. This conversation is complete.",
-    additionalInfo: "You may close this window now.",
-  }
-};
+export default function Page() {
+  const { toggleCall, isSessionActive } = useVapi();
 
-const ACTIVE_COMPONENT = 'visualizer';
-
-export default function Home() {
-  const [currentPage, setCurrentPage] = useState<string | null>(null);
   const [consentGiven, setConsentGiven] = useState(false);
+  const [currentPage, setCurrentPage] = useState("welcome");
+  const [surveyData, setSurveyData] = useState({ satisfaction: "", feedback: "" });
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [surveyResponses, setSurveyResponses] = useState({
-    satisfaction: "",
-    feedback: "",
-    improvements: ""
-  });
-
-  useEffect(() => {
-    if (currentPage === null) {
-      const enabledPages = Object.entries(pageConfig)
-        .filter(([_, config]) => config.enabled)
-        .sort((a, b) => a[1].order - b[1].order);
-      if (enabledPages.length > 0) {
-        setCurrentPage(enabledPages[0][0]);
-      }
-    }
-  }, [currentPage]);
 
   const goToNextPage = () => {
-    const enabledPages = Object.entries(pageConfig)
-      .filter(([_, config]) => config.enabled)
-      .sort((a, b) => a[1].order - b[1].order)
-      .map(([key]) => key);
-
-    const currentIndex = enabledPages.indexOf(currentPage as string);
-    if (currentIndex < enabledPages.length - 1) {
-      setCurrentPage(enabledPages[currentIndex + 1]);
-    }
+    if (currentPage === "welcome") setCurrentPage("interview");
+    else if (currentPage === "interview") setCurrentPage("survey");
+    else if (currentPage === "survey") setCurrentPage("thankYou");
   };
 
   const handleSurveyChange = (e: any) => {
     const { name, value } = e.target;
-    setSurveyResponses(prev => ({ ...prev, [name]: value }));
+    setSurveyData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSurveySubmit = (e: any) => {
     e.preventDefault();
+    console.log("Survey Submitted:", surveyData);
     goToNextPage();
   };
 
@@ -92,66 +44,98 @@ export default function Home() {
   );
 
   const renderWelcome = () => (
-    <div className={styles.container}>
-      <h2 className={styles.title}>{pageConfig.welcome.title}</h2>
-      <p className={styles.text}>{pageConfig.welcome.content}</p>
+    <div className="text-center space-y-6">
+      <h2 className="text-2xl font-bold">{pageConfig.welcome.title}</h2>
+      <p>{pageConfig.welcome.content}</p>
       <label className="block my-4">
         <input type="checkbox" checked={consentGiven} onChange={e => setConsentGiven(e.target.checked)} />
         <span className="ml-2">{pageConfig.welcome.consentText}</span>
       </label>
-      <button onClick={goToNextPage} disabled={!consentGiven}>Continue</button>
+      <button
+        onClick={goToNextPage}
+        disabled={!consentGiven}
+        className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50"
+      >
+        Continue
+      </button>
     </div>
   );
 
   const renderInterview = () => (
-    <div className={styles.container}>
-      <h2 className={styles.title}>{pageConfig.interview.title}</h2>
-      <p className={styles.text}>{pageConfig.interview.content}</p>
+    <div className="text-center space-y-6">
+      <h2 className="text-2xl font-bold">{pageConfig.interview.title}</h2>
+      <p>{pageConfig.interview.content}</p>
       <Visualizer />
-      <button onClick={() => setShowConfirmation(true)}>End Chat</button>
+      <button
+        onClick={() => setShowConfirmation(true)}
+        className="bg-red-500 text-white px-4 py-2 rounded"
+      >
+        End Chat
+      </button>
       {showConfirmation && <ConfirmationDialog />}
     </div>
   );
 
   const renderSurvey = () => (
-    <div className={styles.container}>
-      <h2 className={styles.title}>{pageConfig.survey.title}</h2>
-      <p className={styles.text}>{pageConfig.survey.content}</p>
-      <form onSubmit={handleSurveySubmit}>
-        <select name="satisfaction" onChange={handleSurveyChange} required>
+    <div className="text-center space-y-4">
+      <h2 className="text-2xl font-bold">{pageConfig.survey.title}</h2>
+      <p>{pageConfig.survey.content}</p>
+      <form onSubmit={handleSurveySubmit} className="space-y-4">
+        <select
+          name="satisfaction"
+          onChange={handleSurveyChange}
+          required
+          className="border rounded px-4 py-2"
+        >
           <option value="">Rate Sophie</option>
           <option value="5">Excellent</option>
           <option value="4">Good</option>
           <option value="3">Average</option>
           <option value="2">Bad</option>
         </select>
-        <textarea name="feedback" placeholder="Any comment?" onChange={handleSurveyChange}></textarea>
-        <button type="submit">{pageConfig.survey.submitButtonText}</button>
+        <br />
+        <textarea
+          name="feedback"
+          placeholder="Any comment?"
+          onChange={handleSurveyChange}
+          className="w-full border rounded px-4 py-2"
+        ></textarea>
+        <br />
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          {pageConfig.survey.submitButtonText}
+        </button>
       </form>
     </div>
   );
 
   const renderThankYou = () => (
-    <div className={styles.container}>
-      <h2 className={styles.title}>{pageConfig.thankYou.title}</h2>
-      <p className={styles.text}>{pageConfig.thankYou.content}</p>
+    <div className="text-center space-y-4">
+      <h2 className="text-2xl font-bold">{pageConfig.thankYou.title}</h2>
+      <p>{pageConfig.thankYou.content}</p>
       <p>{pageConfig.thankYou.additionalInfo}</p>
-      <p style={{ marginTop: "20px", fontWeight: "bold" }}>Built by Limits</p>
+      <p className="mt-6 font-bold">Built by Limits</p>
     </div>
   );
 
   const renderCurrentPage = () => {
     switch (currentPage) {
-      case 'welcome': return renderWelcome();
-      case 'interview': return renderInterview();
-      case 'survey': return renderSurvey();
-      case 'thankYou': return renderThankYou();
+      case "welcome": return renderWelcome();
+      case "interview": return renderInterview();
+      case "survey": return renderSurvey();
+      case "thankYou": return renderThankYou();
       default: return null;
     }
   };
 
   return (
     <main className="min-h-screen p-4 bg-gray-50 flex justify-center items-center">
+      {renderCurrentPage()}
+    </main>
+  );
+}p-4 bg-gray-50 flex justify-center items-center">
       {renderCurrentPage()}
     </main>
   );
