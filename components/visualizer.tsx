@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MicIcon, PhoneIcon } from 'lucide-react';
-import useVapi from '@/hooks/use-vapi';
+import useVapi from '../hooks/use-vapi';
 
 const Visualizer: React.FC = () => {
   const { volumeLevel, isSessionActive, toggleCall } = useVapi();
