@@ -49,3 +49,81 @@ export default function Home() {
       <button onClick={goToNextPage} disabled={!consentGiven} className="bg-blue-600 text-white px-4 py-2 rounded">Continue</button>
     </div>
   );
+const renderInterview = () => (
+    <div className="text-center space-y-6">
+      <h2 className="text-2xl font-bold">Ask me anything about my services</h2>
+      <p>I can design QR codes, posters, thumbnails, video edits, banners and more. What do you need?</p>
+      
+      {/* You can plug in a live AI chatbot or typing effect here */}
+      <div className="border p-4 rounded shadow mt-4 bg-white text-black">
+        <p className="italic">"Hi there! 👋 I’m Limits AI. Tell me what you're looking for – a QR design, poster, video edit, or more."</p>
+      </div>
+
+      <button
+        onClick={() => setShowConfirmation(true)}
+        className="bg-red-600 text-white px-4 py-2 rounded mt-6"
+      >
+        End Chat
+      </button>
+
+      {showConfirmation && <ConfirmationDialog />}
+    </div>
+  );
+
+  const renderSurvey = () => (
+    <div className="text-center space-y-4">
+      <h2 className="text-2xl font-bold">Rate My AI Help</h2>
+      <p>Your feedback helps improve the AI assistant.</p>
+      <form onSubmit={handleSurveySubmit} className="space-y-4">
+        <select
+          name="satisfaction"
+          onChange={handleSurveyChange}
+          required
+          className="w-full p-2 border rounded"
+        >
+          <option value="">Choose Rating</option>
+          <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+          <option value="4">⭐⭐⭐⭐ Good</option>
+          <option value="3">⭐⭐⭐ Average</option>
+          <option value="2">⭐⭐ Poor</option>
+          <option value="1">⭐ Bad</option>
+        </select>
+        <textarea
+          name="feedback"
+          onChange={handleSurveyChange}
+          placeholder="Any suggestions?"
+          className="w-full p-2 border rounded"
+        ></textarea>
+        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit</button>
+      </form>
+    </div>
+  );
+
+  const renderThankYou = () => (
+    <div className="text-center space-y-4">
+      <h2 className="text-2xl font-bold">Thank You!</h2>
+      <p>I appreciate your interest in Limits Edits.</p>
+      <p className="text-sm">You can contact me anytime to get posters, thumbnails, banners, QR designs, or custom edits done professionally.</p>
+      <p className="font-semibold text-blue-700 mt-4">WhatsApp: +91 93624 25113</p>
+      <p className="text-gray-500 text-sm mt-6">Powered by Limits AI</p>
+    </div>
+  );
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'welcome': return renderWelcome();
+      case 'interview': return renderInterview();
+      case 'survey': return renderSurvey();
+      case 'thankYou': return renderThankYou();
+      default: return null;
+    }
+  };
+
+  return (
+    <main className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-gray-900 to-black text-white">
+      <div className="max-w-xl w-full bg-gray-800 p-8 rounded-lg shadow-lg">
+        {renderCurrentPage()}
+      </div>
+    </main>
+  );
+}
